@@ -88,7 +88,7 @@ namespace RSA
 
             for (int i = 0; i < Bytes.Length; i++)
             {
-                EncryptText[i] = Convert.ToByte(EncryptFunction(EncryptText[i]));
+                EncryptText[i] = Convert.ToByte(EncryptFunction(Bytes[i]));
             }
 
             return EncryptText;
@@ -121,7 +121,7 @@ namespace RSA
 
             for (int i = 0; i < Bytes.Length; i++)
             {
-                DecryptText[i] = Convert.ToByte(DecryptFunction(DecryptText[i]));
+                DecryptText[i] = Convert.ToByte(DecryptFunction(Bytes[i]));
             }
 
             return DecryptText;

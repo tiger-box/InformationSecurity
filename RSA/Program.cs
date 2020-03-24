@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace RSA
@@ -23,12 +24,17 @@ namespace RSA
 
             Console.WriteLine("Choice program mode: e - encrypt; d - decrypt; g - generate key; any key - quit");
             var programMode = Console.ReadKey(true).KeyChar;
-            if (programMode == 'e' || programMode == 'у')
-                Encrypt();
-            else if (programMode == 'd' || programMode == 'в')
-                Decrypt();
-            else if (programMode == 'g' || programMode == 'п')
-                GenerateKey();
+            do
+            {
+                if (programMode == 'e' || programMode == 'у')
+                    Encrypt();
+                else if (programMode == 'd' || programMode == 'в')
+                    Decrypt();
+                else if (programMode == 'g' || programMode == 'п')
+                    GenerateKey();
+                else
+                    break;
+            } while (true);
 
             Console.WriteLine("Для продолжения нажмите любую клавишу...");
             Console.ReadKey();
@@ -84,7 +90,7 @@ namespace RSA
                 inputTextCode[i] = alphabet[Convert.ToChar(inputText[i])];
             }
 
-            outputText = encoder.Encrypt(inputText);
+            outputText = encoder.Encrypt(inputTextCode);
 
             // Записываем зашифрованный текст в файл EnryptedText.txt
             using (FileStream outputFile = new FileStream("EnryptedText.txt", FileMode.Create))
@@ -94,11 +100,15 @@ namespace RSA
                     outputFile.Write(outputText, 0, outputText.Length);
                 }
             }
+
+            Console.WriteLine("Данные успешно зашифрованы\n" + 
+                              Encoding.UTF8.GetString(outputText));
         }
 
         private static void Decrypt()
         {
             byte[] inputText;
+            byte[] outputTextCode = null;
             byte[] outputText = null;
 
             RSA encoder = new RSA();
@@ -114,7 +124,7 @@ namespace RSA
 
                 byte[] key = new byte[privateKeyFile.Length];
                 privateKeyFile.Read(key, 0, key.Length);
-                encoder.ExportPrivateKey(Encoding.UTF8.GetString(key));
+                encoder.ExportPrivateKey(Encoding.Default.GetString(key));
             }
 
             // Открываем файл с зашифрованным текстом EnryptedText.txt
@@ -131,13 +141,22 @@ namespace RSA
                 inputFile.Read(inputText, 0, inputText.Length);
             }
 
-            outputText = encoder.Decrypt(inputText);
+            outputTextCode = encoder.Decrypt(inputText);
+            outputText = new byte[outputTextCode.Length];
+
+            for (int i = 0; i < outputTextCode.Length; i++)
+            {
+                outputText[i] = Convert.ToByte(alphabet.FirstOrDefault(x => x.Value == outputTextCode[i]).Key);
+            }
 
             // Запись результатов в файл DeryptedText.txt
             using (FileStream outputFile = new FileStream("DeryptedText.txt", FileMode.Create))
             {
                 outputFile.Write(outputText, 0, outputText.Length);
             }
+
+            Console.WriteLine("Данные успешно расшифрованы\n" +
+                              Encoding.UTF8.GetString(outputText));
         }
 
         private static void GenerateKey()
@@ -153,7 +172,7 @@ namespace RSA
                 {
 
                     string publicKey = encoder.ImportPublicKey();
-                    byte[] array = Encoding.Default.GetBytes(publicKey);
+                    byte[] array = Encoding.UTF8.GetBytes(publicKey);
                     publicFileKey.Write(array, 0, array.Length);
                     Console.WriteLine("Файл публичного ключа создан");
                 }
@@ -166,7 +185,7 @@ namespace RSA
                 {
 
                     string privateKey = encoder.ImportPrivateKey();
-                    byte[] array = Encoding.Default.GetBytes(privateKey);
+                    byte[] array = Encoding.UTF8.GetBytes(privateKey);
                     privateFileKey.Write(array, 0, array.Length);
                     Console.WriteLine("Файл секретного ключа создан");
                 }
