@@ -13,19 +13,40 @@ namespace RSA
         static void Main(string[] args)
         {
             // Генерируем алфавит
-            for (int i = 0; i < 26; i++)
+            Console.WriteLine("Choice  alphabet: l - latin; c - cyrillic; any key - quit");
+            var alphabetMode = Console.ReadKey(true).KeyChar;
+
+            if (alphabetMode == 'c' || alphabetMode == 'с')
             {
-                alphabet.Add(
-                    Convert.ToChar(i + Convert.ToInt32('a')),
-                    Convert.ToByte(10 + i));
+                for (int i = 0; i < 26; i++)
+                {
+                    alphabet.Add(
+                        Convert.ToChar(i + Convert.ToInt32('a')),
+                        Convert.ToByte(10 + i));
+                }
+            }
+            else if (alphabetMode == 'l' || alphabetMode == 'д')
+            {
+                for (int i = 0; i < 33; i++)
+                {
+                    alphabet.Add(
+                        Convert.ToChar(i + Convert.ToInt32('а')),
+                        Convert.ToByte(10 + i));
+                }
+            }
+            else
+            {
+                Console.WriteLine("Для продолжения нажмите любую клавишу...");
+                Console.ReadKey();
+                return;
             }
 
             alphabet.Add(' ', 66);
 
-            Console.WriteLine("Choice program mode: e - encrypt; d - decrypt; g - generate key; any key - quit");
-            var programMode = Console.ReadKey(true).KeyChar;
             do
             {
+                Console.WriteLine("Choice program mode: e - encrypt; d - decrypt; g - generate key; any key - quit");
+                var programMode = Console.ReadKey(true).KeyChar;
                 if (programMode == 'e' || programMode == 'у')
                     Encrypt();
                 else if (programMode == 'd' || programMode == 'в')
