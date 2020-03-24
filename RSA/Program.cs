@@ -16,7 +16,7 @@ namespace RSA
             Console.WriteLine("Choice  alphabet: l - latin; c - cyrillic; any key - quit");
             var alphabetMode = Console.ReadKey(true).KeyChar;
 
-            if (alphabetMode == 'c' || alphabetMode == 'с')
+            if (alphabetMode == 'l' || alphabetMode == 'д')
             {
                 for (int i = 0; i < 26; i++)
                 {
@@ -25,7 +25,7 @@ namespace RSA
                         Convert.ToByte(10 + i));
                 }
             }
-            else if (alphabetMode == 'l' || alphabetMode == 'д')
+            else if (alphabetMode == 'c' || alphabetMode == 'c')
             {
                 for (int i = 0; i < 33; i++)
                 {
